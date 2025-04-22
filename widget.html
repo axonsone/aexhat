@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Axons One Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .chatbox {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 340px;
+      max-height: 500px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    h4 {
+      margin: 0 0 12px 0;
+      color: #3f51b5;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 8px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #3f51b5;
+      color: white;
+      cursor: pointer;
+    }
+
+    .response {
+      margin-top: 12px;
+      background: #f5f5ff;
+      padding: 8px;
+      border-left: 3px solid #3f51b5;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbox">
+    <h4>Ask Axons One AI</h4>
+    <textarea id="input" placeholder="Type your question..."></textarea>
+    <button onclick="ask()">Send</button>
+    <div class="response" id="output">Ready to help you!</div>
+  </div>
+
+  <script>
+    async function ask() {
+      const inputEl = document.getElementById("input");
+      const outputEl = document.getElementById("output");
+      const message = inputEl.value.trim();
+      if (!message) return;
+
+      outputEl.textContent = "Thinking...";
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+      const data = await response.json();
+      outputEl.textContent = data.reply || "No response.";
+    }
+  </script>
+</body>
+</html>
