@@ -1,22 +1,102 @@
-<html>
-  <head><title>Axons One Demo Bot</title></head>
-  <body>
-    <h3>Ask Me Anything</h3>
-    <textarea id="input" rows="3" cols="50"></textarea><br>
-    <button onclick="ask()">Send</button>
-    <p><strong>Bot:</strong> <span id="output"></span></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Axons One Chatbot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      padding: 40px 20px;
+      color: #333;
+    }
 
-    <script>
-      async function ask() {
-        const input = document.getElementById("input").value;
-        const response = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: input })
-        });
-        const data = await response.json();
-        document.getElementById("output").innerText = data.reply;
+    .chatbox {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #3f51b5;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      min-height: 80px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #3f51b5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 16px;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #303f9f;
+    }
+
+    .response {
+      margin-top: 16px;
+      background: #f1f1ff;
+      border-left: 4px solid #3f51b5;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
       }
-    </script>
-  </body>
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbox">
+    <h2>🤖 Axons One AI Assistant</h2>
+    <textarea id="input" placeholder="Type your question here..."></textarea>
+    <button onclick="ask()">Send</button>
+    <div class="response" id="output">Waiting for your message...</div>
+  </div>
+
+  <script>
+    async function ask() {
+      const inputEl = document.getElementById("input");
+      const outputEl = document.getElementById("output");
+      const userMessage = inputEl.value.trim();
+      if (!userMessage) return;
+
+      outputEl.textContent = "Thinking...";
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage })
+      });
+      const data = await response.json();
+      outputEl.textContent = data.reply || "No response.";
+    }
+  </script>
+</body>
 </html>
